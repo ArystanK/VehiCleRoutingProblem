@@ -86,17 +86,3 @@ class VehicleRoutingProblemGeneticAlgorithm : VehicleRoutingProblem {
         return geneticAlgorithm(numberOfRoutes, distMatrix, distMatrix.size / numberOfRoutes, 1000)
     }
 }
-
-fun main(): Unit = runBlocking {
-    val vrp = VehicleRoutingProblemGeneticAlgorithm()
-    println(
-        vrp.solve(
-            numberOfRoutes = 5,
-            distMatrix = mapOf(
-                1 to mapOf(1 to 0.0, 2 to 3.0, 3 to 1.0, 4 to 3.0),
-                2 to mapOf(1 to 3.0, 2 to 0.0, 3 to 2.5, 4 to 3.0),
-                2 to mapOf()
-            )
-        )
-    )
-}
