@@ -7,11 +7,12 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.fold
+import kotlinx.coroutines.runBlocking
 import randomList
 import kotlin.random.Random
 
 class VehicleRoutingProblemGeneticAlgorithm : VehicleRoutingProblem {
-    suspend fun geneticAlgorithm(
+    private suspend fun geneticAlgorithm(
         numberOfRoutes: Int,
         distMatrix: Map<Int, Map<Int, Double>>,
         populationSize: Int,
@@ -37,11 +38,12 @@ class VehicleRoutingProblemGeneticAlgorithm : VehicleRoutingProblem {
                 // Perform mutation
                 mutate(offspring, mutationRate, numberOfRoutes)
             }.minBy {
-                evaluateFitness(it, distMatrix)
+                evaluateFitness(it, distMatrix) * it.size
             }
     }
 
-    private fun randomRoute(nodes: Collection<Int>): List<Int> = nodes.toList().randomList()
+    private fun randomRoute(nodes: Collection<Int>): List<Int> =
+        nodes.toList().randomList()
 
     private fun evaluateFitness(
         route: List<Int>,
@@ -60,14 +62,13 @@ class VehicleRoutingProblemGeneticAlgorithm : VehicleRoutingProblem {
 
     private fun crossover(bestRoutes: List<List<Int>>): List<List<Int>> {
         return bestRoutes.flatMap { parent1 ->
-            bestRoutes
-                .map { parent2 ->
-                    parent1
-                        .zip(parent2)
-                        .map {
-                            if (Math.random() < 0.5) it.first else it.second
-                        }
-                }
+            bestRoutes.map { parent2 ->
+                parent1
+                    .zip(parent2)
+                    .map {
+                        if (Math.random() < 0.5) it.first else it.second
+                    }
+            }
         }
     }
 
@@ -82,6 +83,20 @@ class VehicleRoutingProblemGeneticAlgorithm : VehicleRoutingProblem {
     }
 
     override suspend fun solve(numberOfRoutes: Int, distMatrix: Map<Int, Map<Int, Double>>): List<Int> {
-        return geneticAlgorithm(numberOfRoutes, distMatrix, (distMatrix.size * 0.4).toInt(), 20)
+        return geneticAlgorithm(numberOfRoutes, distMatrix, distMatrix.size / numberOfRoutes, 1000)
     }
+}
+
+fun main(): Unit = runBlocking {
+    val vrp = VehicleRoutingProblemGeneticAlgorithm()
+    println(
+        vrp.solve(
+            numberOfRoutes = 5,
+            distMatrix = mapOf(
+                1 to mapOf(1 to 0.0, 2 to 3.0, 3 to 1.0, 4 to 3.0),
+                2 to mapOf(1 to 3.0, 2 to 0.0, 3 to 2.5, 4 to 3.0),
+                2 to mapOf()
+            )
+        )
+    )
 }
