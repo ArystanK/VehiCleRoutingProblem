@@ -2,6 +2,9 @@ package database
 
 import BusStop
 import BusStopTable
+import BusStopTable.address
+import BusStopTable.lat
+import BusStopTable.lon
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -24,13 +27,13 @@ object DatabaseFactory {
         initializeDatabase()
     }
 
-    fun saveData(busStop: BusStop) {
+    fun saveData(busStops: List<BusStop>) {
         transaction {
             addLogger(StdOutSqlLogger)
-            BusStopTable.insert {
-                it[lat] = busStop.lat
-                it[lon] = busStop.lon
-                it[address] = busStop.address
+            BusStopTable.batchInsert(busStops) {
+                this[lat] = it.lat
+                this[lon] = it.lon
+                this[address] = it.address
             }
         }
     }

@@ -1,3 +1,3 @@
 interface BusStopsRepository {
-    fun getBusStops(): List<BusStop>
+    suspend fun getBusStops(): List<BusStop>
 }

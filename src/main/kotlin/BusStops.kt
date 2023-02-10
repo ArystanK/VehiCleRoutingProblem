@@ -3,7 +3,7 @@ import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table
 
 data class BusStop(
-    val id: Int,
+    val id: Int? = null,
     val lat: Double,
     val lon: Double,
     val address: String,
