@@ -19,8 +19,8 @@ fun main() = runBlocking {
 
 fun generateDistanceMatrix(busStops: List<BusStop>): Map<Int, Map<Int, Double>> {
     return busStops.associate { outer ->
-        outer.id to busStops.associate { inner ->
-            inner.id to (outer.lat - inner.lat).pow(2) + (outer.lon - inner.lon).pow(2)
+        (outer.id ?: 0) to busStops.associate { inner ->
+            (inner.id ?: 0) to (outer.lat - inner.lat).pow(2) + (outer.lon - inner.lon).pow(2)
         }
     }
 }
