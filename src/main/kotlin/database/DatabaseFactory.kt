@@ -44,9 +44,9 @@ object DatabaseFactory {
             BusStopTable.selectAll().distinct().map {
                 BusStop(
                     it[BusStopTable.id].value,
-                    it[BusStopTable.lat],
-                    it[BusStopTable.lon],
-                    it[BusStopTable.address]
+                    it[lat],
+                    it[lon],
+                    it[address]
                 )
             }
         }
